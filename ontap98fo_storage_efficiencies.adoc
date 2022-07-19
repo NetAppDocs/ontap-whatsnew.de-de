@@ -1,0 +1,69 @@
+---
+sidebar: sidebar 
+permalink: ontap98fo_storage_efficiencies.html 
+keywords: FabricPool, Compression, FlexClone, Snapshot, compaction, deduplication, 
+summary: Diese Seite behandelt die ONTAP 9.8 Storage-Effizienzfunktionen, insbesondere die Komprimierung und die Ressourcen, die in Verbindung mit der NetApp FabricPool Technologie stehen. 
+---
+= Storage-Effizienz
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+Storage-Effizienz umfasst alle Funktionen, die die Menge der physischen Kapazität, die Daten in einem Storage-System benötigt, reduzieren. In ONTAP umfasst dies:
+
+* Datenkomprimierung
+* Data-Compaction
+* Datendeduplizierung
+* NetApp FabricPool
+
+
+Manchmal können diese Definitionen wie folgt aufgespannt werden:
+
+* NetApp FlexClone Technologie
+* NetApp Snapshot Kopien
+
+
+Storage-Effizienz ist unerlässlich, um die Storage-Kosten gering zu halten, da die Anzahl der erforderlichen physischen Hardware reduziert wird. ONTAP kann die Datenreduzierung auf Systemen inline (AFF-Systeme) oder nachbearbeiten (alle Systeme), mit minimalen Auswirkungen auf die Systemleistung.
+
+In ONTAP 9.8 stehen zahlreiche Verbesserungen zur Verfügung, die zur Steigerung der Storage-Effizienz verfügbar sind.
+
+
+
+== FabricPool
+
+FabricPool ist die Daten-Tiering-Technologie von NetApp, die Blöcke, die in einem Dateisystem als „kalt“ markiert sind, in 4-MB-Objekte bündelt und diese dann an Cloud- oder S3-Buckets versendet werden. Die Idee besteht darin, dass kalte Daten bis zu 80 % der Gesamtkapazität in einem Storage-System belegen können. Anstatt all dies auf Performance-Ebene zu halten, ist es also besser, sie auf eine kostengünstigere Storage-Lösung zu verschieben.
+
+Dies alles geschieht automatisch in ONTAP durch Tiering-Richtlinien, die Sie festlegen können. Mit Inactive Data Reporting lässt sich ermitteln, wie viele kalte Daten Sie heute in Ihrem Storage-System haben. So können Sie überprüfen, ob Sie mit FabricPool tatsächlich Geld sparen würden.
+
+image:ontap98fo_image22.png["Fehler: Fehlendes Grafikbild"]
+
+Wenn ein Client auf eine Datei zugreift, die in die Cloud verschoben wurde, werden nur die angeforderten Blöcke (nicht die gesamte Datei) für den Zugriff zurück an das Performance-Tier gebracht.
+
+Weitere Informationen zu FabricPool finden Sie unter https://www.netapp.com/pdf.html?item=/media/17239-tr4598pdf.pdf["TR-4598: FabricPool Best Practices"] Und https://soundcloud.com/techontap_podcast/episode-268-netapp-fabricpool-and-s3-in-ontap-98["TR-4598: FabricPool Best Practices and Tech OnTap Podcast Folge 268: NetApp FabricPool und S3 in ONTAP 9.8"^].
+
+ONTAP 9.8 unterstützt die folgenden FabricPool-Funktionen:
+
+* *Tiering von HDD-Aggregaten.* vor ONTAP 9.8 war FabricPool-Tiering von ONTAP aus in die Cloud nur auf SSD-Aggregaten möglich. Mit ONTAP 9.8 können Sie jetzt ein Tiering mit FabricPool von HDD-Aggregaten erstellen.
+* *Tiering zu ONTAP S3.* Da ONTAP S3 nun allgemein verfügbar ist, ist es nun möglich, von einem ONTAP-System mit FabricPool auf einen ONTAP S3-Bucket zu Stufen. Somit kann alternder Storage-Kapazität durch Nutzung als FabricPool Tier genutzt werden. Darüber hinaus erhalten Kunden durch Tiering an dasselbe Cluster schnellere Abrufzeiten als beim Passieren einer Cloud-Netzwerkverbindung.
+* *Erhöhte Kühldauer.* vor ONTAP 9.8 werden die Daten nach einer Kühlzeit mit maximal 63 Tagen als kalt markiert. Mit ONTAP 9.8 können Sie diesen Wert bis zu 183 Tage lang konfigurieren. Dies ist nützlich für Daten, auf die sporadisch zugegriffen wird, beispielsweise Daten, auf die vierteljährlich zugegriffen wird, wie etwa Finanzberichte.
+* *Objekt-Tagging.* Wenn Sie eine Tiering zu einem S3-Provider mit Information Lifecycle Policies erstellen, die Daten basierend auf Objekt-Tags verwalten, kann ONTAP 9.8 Objekte Tiered-Tags mit FabricPool kennzeichnen, um sie in diese Richtlinien zu integrieren.
+* *Cloud-Abruf.* in einigen Fällen müssen Sie möglicherweise alle Tiered-Daten aus der Cloud zurückholen. Anstatt auf sämtliche Daten zugreifen zu müssen, können Sie jetzt im ONTAP 9.8 einen Job ausführen, der die Daten aus der Cloud abruft.
+
+
+
+
+== Komprimierung
+
+ONTAP 9.8 führte einige Änderungen der Datenkomprimierung ein, die zur Verbesserung der Performance und zur Verbesserung des Datenreduzierungsquoten für komprimierbare Datensätze beitragen.
+
+Die Hauptänderung bei der Komprimierung bestand darin, die Daten in die Kategorien „kalte“ und „heiße“ Daten zu differenzieren. „Kalte“ Daten sind Daten, auf die lange nicht zugegriffen wird und häufig verwendete Daten sind. Wir möchten daher heiße Daten weniger aggressiv komprimieren und selten genutzte Daten stärker komprimieren.
+
+In ONTAP 9.8 werden wichtige Daten mit 8-KB-Komprimierungsgruppen inline komprimiert. Außerdem findet vor der Komprimierung die Datendeduplizierung statt und steigert so die Effizienz der Datensätze.
+
+„Kalte“ Daten werden dann mithilfe einer aggressiveren 32.000 Komprimierungsgruppe erneut im Hintergrund komprimiert. Durch diese Änderungen ergeben sich eine bessere Performance häufig genutzter Daten und ein besseres Datenreduzierungsverhältnis für alle Daten.
+
+link:ontap98fo_data_protection.html["Im Nächsten Schritt: Datensicherung"]

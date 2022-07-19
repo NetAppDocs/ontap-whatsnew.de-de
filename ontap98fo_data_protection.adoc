@@ -1,0 +1,135 @@
+---
+sidebar: sidebar 
+permalink: ontap98fo_data_protection.html 
+keywords: 'TR-4872, Data Protection, Security, Secure Purge, IPSec, NetApp Volume Encryption, NVE, SnapMirror Cloud, SnapMirror Business Continuity (SM-BC)' 
+summary: Auf dieser Seite werden die neuesten Verbesserungen der Datensicherung in ONTAP 9.8 behandelt. Dazu gehören das Konzept der externen Replizierung von Daten sowie die Sicherung der aktiven Daten und Daten im Ruhezustand. 
+---
+= Datensicherung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+Datensicherung im Zusammenhang mit diesem Dokument bezieht sich sowohl auf den Begriff der externen Replizierung von Daten als auch auf die Sicherung der aktiven Daten und im Ruhezustand. In diesem Abschnitt werden die neuesten Verbesserungen der Datensicherung bei ONTAP 9.8 vorgestellt.
+
+
+
+== Sicherheit
+
+Jede Version von ONTAP umfasst neue Sicherheitsfunktionen und -Verbesserungen, und ONTAP 9.8 unterscheidet sich in dieser Hinsicht. Weitere Informationen zu den Sicherheitsfunktionen von ONTAP finden Sie unter https://www.netapp.com/pdf.html?item=/media/10674-tr4569pdf.pdf["TR-4569: Security Hardening Guide for ONTAP 9"^].
+
+
+
+=== Sicheres Löschen
+
+In Umgebungen mit klassifizierten oder sensiblen Daten wird eine Datei versehentlich auf ein Volume geschrieben, auf das Personen ohne Zugriff auf diese Datei zugreifen können, dadurch erzeugt, was als Datenunfall bezeichnet wird. Dadurch entsteht ein Szenario, in dem ganze Volumes gelöscht und Disks bereinigt werden müssen, um die Verschüttung zu bereinigen.
+
+NetApp Volume Encryption und Secure Purge boten eine Möglichkeit, diese potenziellen Ausfälle zu minimieren, indem es eine Möglichkeit bot, einzelne Dateien kryptografisch zu vernichten, indem der mit der Datei verbundene Sicherheitsschlüssel gelöscht wird. Nach diesem Schlüssel können die Daten nicht mehr von der Festplatte wiederhergestellt werden. Dieses Verfahren wurde von einem Unternehmen zur Datenwiederherstellung extern validiert und verwendet dabei die NIST SP 800-88-Richtlinien für die mediale Sanitärversorgung.
+
+Aber selbst für eine sichere Löschung gab es Grenzen. Wenn Sie beispielsweise eine Datei löschen müssen, müssten Sie ein Volume verschieben, wodurch im System verfügbarer Speicherplatz erforderlich ist. Falls SnapMirror vorhanden ist, müssen Sie nach einer sicheren Löschung eine erneute Basisausrichtung durchführen.
+
+Secure Purge in ONTAP 9.8 beseitigt diese Einschränkungen durch:
+
+* Bereitstellung eines einfachen, in-Place-Verfahrens für die Verschlüsselung von Dateien.
+* Damit können vorhandene SnapMirror Spiegelungen beibehalten werden, ohne dass eine erneute Basiskopie nötig ist.
+
+
+
+
+=== IPsec
+
+IPsec ist ein Standardmechanismus zur Durchführung applikationsunabhängiger Verschlüsselung über das Netzwerk. Mit IPSec können Sie den Netzwerkverkehr unabhängig vom verwendeten Protokoll verschlüsseln. Das bietet Möglichkeiten für Vereinfachung, insbesondere bei NFS, wo sich die Kerberos-Verschlüsselung schwierig einrichten und verwenden lässt und die einzige Möglichkeit bietet, iSCSI-Datenverkehr über das Netzwerk zu verschlüsseln.
+
+ONTAP 9.8 bietet jetzt Unterstützung für IPSec. Die ONTAP-Implementierung von IPSec nutzt einen vorab gemeinsam genutzten Schlüssel (PSK) mit dem verbundenen Client. Zu diesen Clients gehören alle aktuellen Betriebssysteme, die IKEv2 mit PSK nutzen. Beachten Sie, dass das Windows-Betriebssystem IKEv2 mit PSK nicht unterstützt.
+
+
+
+=== Trusted Platform-Modul
+
+Mit dem neuen Trusted Platform Module (TPM) in ONTAP 9.8 werden die Verschlüsselungsschlüssel für den Onboard Key Manager (OKM) durch das physische TPM versiegelt, was mehr Sicherheit und Schutz bietet. Der Wechsel zum TPM erfolgt ohne Unterbrechungen.
+
+
+
+=== NetApp Volume Encryption
+
+NetApp Volume Encryption (NVE) ist eine Softwarelösung, die die Verschlüsselung von Daten-Volumes auf beliebigen Laufwerkstypen mit einem eindeutigen Schlüssel für jedes Volume ermöglicht. Diese Funktion ist seit ONTAP 9.1 verfügbar.
+
+ONTAP 9.8 bietet NVE Unterstützung für die Root-Volumes des Nodes. Diese enthalten Protokolldateien, Cluster-Konfigurations-Backups, Core-Dateien und andere systembezogene Informationen, die Sie mit FIPS-140-2-konformer Verschlüsselung sichern möchten.
+
+
+
+== SnapMirror Cloud
+
+SnapMirror ist eine der führenden Replizierungstechnologien von ONTAP. Mit der Möglichkeit können Storage-Administratoren exakte Kopien von Datensätzen über eine WAN-Verbindung erstellen und nur die geänderten Blöcke replizieren, um die Netzwerkauslastung zu verringern.
+
+Im Laufe der letzten ONTAP Versionen wurde die SnapMirror Unterstützung auch auf Systeme anderer Anbieter wie z. B. der erweitert https://blog.netapp.com/introducing-snapmirror-for-solidfire-element-os-enabling-data-replication-across-the-data-fabric/["SolidFire Element OS"^]. ONTAP 9.8 bietet jetzt die Möglichkeit, SnapMirror zur Replizierung in die Cloud oder in S3 Objekt-Buckets vor Ort zu nutzen.
+
+image:ontap98fo_image23.png["Fehler: Fehlendes Grafikbild"]
+
+Durch die Nutzung des neuen https://blog.netapp.com/new-backup-architecture-snapdiff-v3["SnapDiff 3.0"^], SnapMirror kann Daten sicher und effizient von ONTAP NAS Volumes in Objekt-Storage Buckets replizieren. Dadurch erhalten Sie Hybrid-Cloud-Mobilität über die gesamte ONTAP Data Fabric hinweg.
+
+* Platzsparende Backups von Snapshots auf Objekt-Storage in der Cloud Wahrung der Storage-Effizienz
+* Unterstützt vollständige Restores von Volumes und einzelnen Dateien
+
+
+In ONTAP 9.8 erfordert SnapMirror Cloud die Orchestrierung mit einer der folgenden beiden Methoden. Es wird nicht unterstützt in System Manager oder direkt über APIs oder die CLI.
+
+* Über eine lizenzierte ISV-Partnerapplikation, die die Backup- und Restore-Workflows erstellt und managt. Es ist eine SnapMirror Cloud Lizenz erforderlich.
+* Über den Cloud Backup Service. Es ist keine SnapMirror Cloud Lizenz erforderlich.
+
+
+Weitere Informationen zu SnapDiff und SnapMirror Cloud finden Sie in den folgenden Ressourcen:
+
+* https://soundcloud.com/techontap_podcast/episode-264-netapp-ontap-snapdiff["Folge 264 des Tech OnTap Podcasts: NetApp ONTAP SnapDiff"^]
+* https://soundcloud.com/techontap_podcast/episode-265-netapp-snapmirror-cloud-featuring-prolion["Folge 265 des Tech OnTap Podcasts: NetApp SnapMirror Cloud mit ProLion"^]
+* https://blog.netapp.com/new-backup-architecture-snapdiff-v3["NetApp Blog: Eine neue Backup-Architektur mit SnapDiff/SnapMirror Cloud-v3"^]
+
+
+
+
+== SnapMirror Business Continuity (SM-BC)
+
+https://blog.netapp.com/snapmirror-synchronous-ontap-9-6/["SnapMirror Synchronous"^] (SM-S) wurde mit ONTAP 9.5 eingeführt und bietet synchrone Datenreplizierung mit Volume-Granularität und Storage-Effizienz, auf die Unternehmen für Backup, Disaster Recovery und Datenmobilität angewiesen sind. SM-S repliziert Daten auf NetApp FlexVol Volumes zwischen vollständig redundanten ONTAP Storage-Systemen, die sich über Datacenter oder Großraumgebiete hinweg befinden, mit einer Round Trip Time (RTT) von weniger als 10 ms, um eine Recovery Point Objective von null und eine Recovery Time Objective von fast null zu erreichen.
+
+ONTAP 9.8 übernimmt das Konzept von SnapMirror Synchronous in SAN-Umgebungen und stellt eine automatische Failover-Funktion für Applikationen der Consistency Group bereit. Dabei verwendet es System Manager zur Konfiguration und den ONTAP Mediator für das Management und die Aufrechterhaltung der Business Continuity im Falle eines Systemausfalls. Weil die Beziehung synchron ist, werden Anwendungen keinen Beat verpassen, wenn Failover. Die erste Version von SnapMirror Business Continuity unterstützt nur SAN-Workloads (iSCSI und FCP).
+
+Weitere Informationen zur Business Continuity mit SnapMirror finden Sie im https://soundcloud.com/techontap_podcast/episode-267-snapmirror-business-continuity-sm-bc-for-ontap-98["Folge 267 des Tech OnTap Podcasts: SnapMirror Business Continuity"^].
+
+
+
+== MetroCluster
+
+Die NetApp MetroCluster (MC) Software ist eine Lösung, die ein arraybasiertes Clustering mit synchroner Replizierung kombiniert und so eine kontinuierliche Verfügbarkeit ohne Datenverluste bei minimalen Kosten zur Verfügung stellt. Die Administration des arraybasierten Clusters ist einfacher, da die sonst mit Host-basiertem Clustering verbundene Abhängigkeit und Komplexität entfallen.
+
+image:ontap98fo_image24.png["Fehler: Fehlendes Grafikbild"]
+
+MetroCluster dupliziert transaktionsorientiert sofort alle geschäftskritischen Daten und bietet einen unterbrechungsfreien Zugriff auf all Ihre Applikationen und Informationen. Im Gegensatz zu herkömmlichen Lösungen zur Datenreplizierung arbeitet MetroCluster nahtlos mit Ihrer Host-Umgebung zusammen. Dadurch wird eine kontinuierliche Datenverfügbarkeit sichergestellt und Sie müssen sich nicht mit der Erstellung und Verwaltung komplizierter Failover-Skripts befassen.
+
+Mit MetroCluster führen Sie die folgenden Aufgaben aus:
+
+* Schützen Sie sich dank transparenter Switchover-Funktionalität vor Hardware-, Netzwerk- oder Standortausfällen
+* Vermeiden Sie geplante und ungeplante Ausfallzeiten sowie Änderungsmanagement
+* Führen Sie Hardware- und Software-Updates durch, ohne den Geschäftsbetrieb zu unterbrechen
+* Führen Sie Implementierungen ohne komplexe Skript-, Applikations- oder Betriebssystemabhängigkeiten durch
+* Kontinuierliche Verfügbarkeit für VMware, Microsoft, Oracle, SAP oder kritische Applikationen
+
+
+ONTAP 9.8 bietet die folgenden Verbesserungen für MetroCluster.
+
+* *Unterstützung für neue Einstiegs- und Midrange-Plattformen* NetApp AFF A250, FAS500f, FAS8300, FAS 8700 Hybrid und A400. Bei neuen Installationen von A220, FAS2750 und FAS500f kann ein VLAN nun größer als 100 und weniger als 4096 angegeben werden.
+* *Unterbrechungsfreier Übergang von MC-FC zu MC-IP.* nur Cluster mit vier Nodes; MCC mit zwei Nodes erfordert Ausfallzeiten. Einfache Umstellung auf MC-IP bei einer bevorstehenden Technologieaktualisierung.
+* *Nicht gespiegelte Aggregate werden jetzt für MC IP unterstützt.* Replizieren Sie nur gewünschte Aggregate auf die Failover-Seite für mehr Applikationsgranularität.
+* Unterstützung für den Cisco 9336C-FX2 Switch und für A400, FAS 8300 und FAS 8700 auf dem BES-53248 Switch mit einer zusätzlichen 100-GB-Port-Lizenz.
+
+
+Weitere Informationen zu MetroCluster finden Sie in den folgenden Ressourcen:
+
+* https://www.netapp.com/us/media/tr-4375.pdf["TR-4375: MetroCluster FC für ONTAP 9.7"^]
+* https://www.netapp.com/us/media/tr-4689.pdf["TR-4689: Architektur und Design der MetroCluster IP-Lösung"^]
+* https://www.netapp.com/pdf.html?item=/media/13480-tr4705pdf.pdf["TR-4705: Lösungsarchitektur und Design der NetApp MetroCluster Lösung"^]
+
+
+link:ontap98fo_vmware_virtualization.html["Als Nächstes: VMware Virtualisierung"]

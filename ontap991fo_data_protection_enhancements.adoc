@@ -1,0 +1,136 @@
+---
+sidebar: sidebar 
+permalink: ontap991fo_data_protection_enhancements.html 
+keywords: replication, failover, disaster recovery, dr, synchronous, backup, archive 
+summary: Datensicherung im Kontext dieses Dokuments bezieht sich sowohl auf den Begriff der externen Replizierung von Daten als auch auf automatisierte Failover-Prozesse in der Infrastruktur. In diesem Abschnitt werden die neuesten Verbesserungen der Datensicherung bei ONTAP 9.9 vorgestellt. 
+---
+= Verbesserte Datensicherung
+:allow-uri-read: 
+
+
+Datensicherung im Kontext dieses Dokuments bezieht sich sowohl auf den Begriff der externen Replizierung von Daten als auch auf automatisierte Failover-Prozesse in der Infrastruktur. In diesem Abschnitt werden die neuesten Verbesserungen der Datensicherung bei ONTAP 9.9 vorgestellt.
+
+
+
+== Transparentes Applikations-Failover für SAN mit SnapMirror Business Continuity
+
+NetApp SnapMirror ist eine branchenführende Replizierungstechnologie, die für eine Vielzahl von Anwendungsfällen genutzt werden kann:
+
+* Disaster Recovery für einen schnellen Failover am Standort bei einem Ausfall und schnelle Resynchronisierung zurück auf das Primärsystem
+* Synchrone Replizierung für sekundengenaue Datenkopien an einem Remote-Standort
+* Anwendungsfälle für Backup und Archivierung (mit mehr Snapshot Kopien auf dem Zielsystem als auf der Quelle)
+
+
+https://docs.netapp.com/us-en/ontap/smbc/["SnapMirror Business Continuity in ONTAP"^] Erweitert die Angebote von SnapMirror und bietet ein schnelles, einfaches und automatisiertes Failover synchroner SnapMirror Beziehungen für granulare Datensicherung auf Applikationsebene.
+
+SnapMirror Business Continuity verwendet einen Mediator, um ein Quorum zwischen den Standorten zu wahren und Split-Brain-Szenarien bei einem Standortausfall zu vermeiden. Jetzt ist eine neue ONTAP Mediator-Softwareversion (1.2) verfügbar, die bis zu 10 ONTAP-Systeme unterstützt und innerhalb von 120 Sekunden nach Ausfall die Umschalung von Anwendungen zwischen Standorten automatisiert.
+
+image:ontap991fo_image11.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== MetroCluster über IP
+
+Die NetApp MetroCluster (MC) Software ist eine Lösung, die ein arraybasiertes Clustering mit synchroner Replizierung kombiniert und so eine kontinuierliche Verfügbarkeit ohne Datenverluste bei minimalen Kosten zur Verfügung stellt. Die Administration des arraybasierten Clusters ist einfacher, da die sonst mit Host-basiertem Clustering verbundene Abhängigkeit und Komplexität entfallen.
+
+image:ontap991fo_image12.png["Fehler: Fehlendes Grafikbild"]
+
+MetroCluster dupliziert transaktionsorientiert sofort alle geschäftskritischen Daten und bietet einen unterbrechungsfreien Zugriff auf all Ihre Applikationen und Informationen. Im Gegensatz zu herkömmlichen Lösungen zur Datenreplizierung arbeitet MetroCluster nahtlos mit Ihrer Host-Umgebung zusammen. Dadurch wird eine kontinuierliche Datenverfügbarkeit sichergestellt und Sie müssen sich nicht mit der Erstellung und Verwaltung komplizierter Failover-Skripts befassen.
+
+Mit MetroCluster führen Sie die folgenden Aufgaben aus:
+
+* Schützen Sie sich dank transparenter Switchover-Funktionalität vor Hardware-, Netzwerk- oder Standortausfällen
+* Vermeiden Sie geplante und ungeplante Ausfallzeiten sowie Änderungsmanagement
+* Führen Sie Hardware- und Software-Updates durch, ohne den Geschäftsbetrieb zu unterbrechen
+* Führen Sie Implementierungen ohne komplexe Skript-, Applikations- oder Betriebssystemabhängigkeiten durch
+* Kontinuierliche Verfügbarkeit für VMware, Microsoft, Oracle, SAP oder kritische Applikationen
+
+
+Bei NetApp MetroCluster wurde traditionell mit einem Fibre-Channel-Backend implementiert. Neuere Versionen von ONTAP unterstützen jedoch die Verwendung von IP-Netzwerken für das Backend. Dadurch werden nicht nur die Kosten und die Komplexität der Standort-Failover-Infrastruktur verringert, sondern auch der MetroCluster-Bereich auf ca. 700 km (oder 300 mi) erweitert.
+
+ONTAP 9.9.1 bringt die folgenden Fortschritte auf MetroCluster.
+
+* Erhöhte Anzahl von Volumes auf 1600 pro HA-Paar
+* Shared-Layer-3-Netzwerke
++
+** Abhängigkeit von dedizierten Layer- 2-Netzwerken ist nicht mehr nötig
+** ONTAP muss direkt mit dem Router verbunden sein
+** Keine dynamische Routing-Unterstützung
+
+
+* Größere Nodes pro Standort (vier pro Standort, acht pro Cluster)
+
+
+
+
+=== Wann Sie sich für MetroCluster im Vergleich zur Business Continuity mit SnapMirror entscheiden sollten
+
+Da MetroCluster und SnapMirror Business Continuity einige der gleichen Funktionssätze teilen (die Fähigkeit zur Nutzung bestehender IP-Netzwerke, automatisierter Failover, synchroner Replikation), wird die Frage „Wann sollte ich jedes verwenden“ relevanter.
+
+Die Antwort hängt von den folgenden Fragen ab.
+
+* Wie lauten Ihre Service-Level-Ziele?
+* Wie granular soll ein Failover sein?
+
+
+MetroCluster bietet automatisierte Failover-Prozesse in der Infrastruktur für HA-Paare und physische Aggregate und unterstützt SAN- und NAS-Workloads, während SnapMirror Business Continuity ausschließlich für SAN-Workloads auf Applikationsebene verfügbar ist.
+
+Weitere Informationen zu MetroCluster over IP finden Sie unter https://www.netapp.com/pdf.html?item=/media/13481-tr4689pdf.pdf["Architektur und Design der MetroCluster IP-Lösung"^].
+
+Weitere Informationen zur Business Continuity mit SnapMirror finden Sie unter https://docs.netapp.com/us-en/ontap/smbc/["SnapMirror Business Continuity in ONTAP"^].
+
+
+
+== FlexGroup Volume-Datensicherung
+
+FlexGroup Volumes sind die horizontal skalierbare NetApp ONTAP NAS-Lösung. Sie bietet bis zu 20 PB und 400 Milliarden Dateien in einem Single Namespace. Durch die automatische parallele Verarbeitung großer Ingest-Workloads zum Lastausgleich können Kapazitäten, Performance und Benutzerfreundlichkeit miteinander verschoben werden.
+
+image:ontap991fo_image13.png["Fehler: Fehlendes Grafikbild"]
+
+Weitere Informationen zu FlexGroup Volumes finden Sie unter https://www.netapp.com/us/media/tr-4571.pdf["TR-4571: NetApp FlexGroup Volumes Best Practices"^].
+
+In ONTAP 9.9 unterstützen FlexGroup Volumes eine Vielzahl von Datensicherungskonfigurationen.
+
+
+
+=== Kaskadierung und Fan-out SnapMirror
+
+Durch eine Kaskadierung von SnapMirror kann ein Storage-Administrator seriell auf mehrere Standorte replizieren. Beispielsweise kann Standort A Daten an Standort B (lokal oder in Cloud) replizieren und Standort B dasselbe Volume anschließend an Standort C (lokal oder in der Cloud) replizieren.
+
+image:ontap991fo_image14.png["Fehler: Fehlendes Grafikbild"]
+
+Ein Fan-out SnapMirror kann Replizierungen von einem Quell-Volume auf mehrere Ziel-Volumes durchführen. Standort A kann also eine Quell-FlexGroup auf Standorte B und C (lokal oder Cloud) replizieren. Dies sorgt für mehr Flexibilität und Ausfallsicherheit bei Datensicherungs-Konfigurationen.
+
+image:ontap991fo_image15.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+=== Disaster Recovery von Storage Virtual Machines (SVM-DR)
+
+Bei SVM-DR handelt es sich um eine ONTAP Funktion, mit der Sie nicht nur Daten-Volumes an einen Remote-Standort replizieren können, sondern auch die SVM-Konfigurationsdetails wie CIFS-Freigaben, NFS-Exporte, Daten-LIFs und sogar die NFS-Datei-Griffe, um beim Failover zum DR-Standort erneute Mounts zu vermeiden.
+
+image:ontap991fo_image16.png["Fehler: Fehlendes Grafikbild"]
+
+ONTAP 9.9.1 unterstützt SVM-DR für FlexGroup Volumes mit den folgenden Einschränkungen.
+
+* Keine FabricPool-Unterstützung
+* Kein FlexClone
+* Kein SnapMirror Fan-out
+* Keine FlexVol-Konvertierung ohne Basis-Restore
+
+
+
+
+== Verbesserungen von SnapLock
+
+https://www.netapp.com/data-protection/ontap-security/snaplock-compliance/["NetApp SnapLock"^] Ist die WORM-Compliance-Replizierungslösung von NetApp. Sie bietet integrierte Datensicherung für Workloads, die gesetzliche Vorgaben wie HIPAA, SEC 17a-4(f) Rule, FINRA und CFTC einhalten müssen, sowie nationale Anforderungen des deutschsprachigen Raums (Dach).
+
+SnapLock unterstützt die Unversehrtheit und Aufbewahrung von Daten, sodass elektronische Aufzeichnungen unveränderbar und schnell abrufbar sind. Die SnapLock Aufbewahrungsfunktionen sind für die Einhaltung strenger Datenaufbewahrungsanforderungen zertifiziert und erfüllen zudem weitere Aufbewahrungsanforderungen wie die Einhaltung gesetzlicher Aufbewahrungspflichten, ereignisbasierter Aufbewahrung und Volume Append Mode.
+
+ONTAP 9.9.1 bietet folgende Verbesserungen für NetApp SnapLock:
+
+* https://docs.netapp.com/ontap-9/index.jsp?topic=%2Fcom.netapp.doc.dot-cm-concepts%2FGUID-8A8108CF-499A-46FC-917F-A40FAD68C8D6.html["Storage-Effizienz"^] Unterstützung auf WORM Volumes: Unterstützung für Data-Compaction, Deduplizierung auf Volume-/Aggregatebene (nur AFF), kontinuierliche Segmentreinigung und temperaturabhängige Storage-Effizienz
+* Ransomware-Schutz für SnapLock-Volumes mit Snapshot-Kopien von LUNs.für weitere Informationen über SnapLock, siehe https://www.netapp.com/pdf.html?item=/media/6158-tr4526pdf.pdf["Worm-Speicherung gemäß NetApp SnapLock"^].
+
+
+Weitere Informationen zu SnapLock finden Sie unter https://www.netapp.com/pdf.html?item=/media/6158-tr4526pdf.pdf["Worm-Speicherung gemäß NetApp SnapLock"^].
