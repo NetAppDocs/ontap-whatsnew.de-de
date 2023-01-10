@@ -29,5 +29,5 @@ Dies bedeutet, dass Folgendes gilt:
 * Unterstützung von https://tanzu.vmware.com/tanzu["VMware Tanzu"^] Storage
 * Verbesserte Unterstützung von VVols, darunter ein erweiterter SAN vVol Rebalancing Befehl und Verbesserungen an den Storage-Funktionsprofilen. Weitere Informationen zum aktuellen Support zur VMware Virtualisierung finden Sie in den folgenden Ressourcen:
 * https://soundcloud.com/techontap_podcast/episode-263-virtualization-in-ontap-fall-2020-update["Folge 263 des Tech OnTap Podcasts: Virtualisierung in ONTAP – Herbst 2020"^]
-* https://www.netapp.com/us/media/tr-4597.pdf["TR-4597: VMware vSphere with ONTAP"^]
+* https://docs.netapp.com/us-en/netapp-solutions/virtualization/vsphere_ontap_ontap_for_vsphere.html["TR-4597: VMware vSphere für ONTAP"^]
 
