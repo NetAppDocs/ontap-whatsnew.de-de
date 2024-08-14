@@ -33,6 +33,4 @@ Diese Liste ist nicht umfassend. Wenn wir alle Funktionen von ONTAP nutzen würd
 
 Weitere Informationen zu NetApp ONTAP finden Sie im https://www.netapp.com/pdf.html?item=/media/7413-ds-3231.pdf["Datenblatt zur Datenmanagement-Software ONTAP 9"^] Und das https://docs.netapp.com/ontap-9/index.jsp["Produktdokumentation"^].
 
-Sehen Sie sich das an link:https://tv.netapp.com/detail/video/6211778986001["Video"] Ab NetApp Insight 2020 für eine breitere Tour mit bemerkenswerten Fortschritten in NetApp ONTAP.
-
 link:ontap98fo_simplicity_enhancements.html["Weiter: Erweiterungen Der Einfachheit"]
